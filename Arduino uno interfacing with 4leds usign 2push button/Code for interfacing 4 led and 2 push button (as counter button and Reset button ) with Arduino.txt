@@ -1,0 +1,55 @@
+---------------------------Code for interfacing 4 led and 2 push button (as counter button and Reset button ) with Arduino.----------------------------------------------
+
+
+int Buttonpin = 8;                            // connect  pushbutton 1 with pin no 8 of arduino
+int resetbutton = 9;                          // connect  pushbutton 2 with pin no 8 of arduino
+int buttonstate = 0;
+int count = 0;
+void setup()
+{
+
+  for(int x=0;x<4;x++)
+  {
+    pinMode(x,OUTPUT);                        // 4 leds connect to pin number from 0 to 3 and it act as output indication from arduino
+  }
+ pinMode(Buttonpin , INPUT);                  // make pushbutton 1 as Input source to arduino
+  pinMode(resetbutton, INPUT);                // make pushbutton 2 as reset button Input source to arduino
+}
+
+void loop()
+{
+  buttonstate = digitalRead(Buttonpin);
+if((buttonstate == HIGH) && (count <=3))
+{
+  count++;
+  delay(500);
+} 
+switch(count)
+{
+  case 1:digitalWrite(0,HIGH);                                      // makes led1 as high
+  break;
+  case 2:digitalWrite(1,HIGH);                                      // makes led2 as high
+
+  break;
+  case 3:digitalWrite(2,HIGH);                                      // makes led3 as high
+
+  break;
+  case 4:digitalWrite(3,HIGH);                                      // makes led4 as high
+
+  break;
+  default:Serial.println(count);;                                               // by default all leds should be off in starting
+           digitalWrite(0,LOW);
+           digitalWrite(1,LOW);
+           digitalWrite(2,LOW);
+           digitalWrite(3,LOW);
+  break;
+count = 0;
+}
+if(digitalRead(resetbutton) == HIGH)                                            // if resetbutton is high or pressed then all leds should stop to glow.
+          {
+            digitalWrite(0,LOW);
+            digitalWrite(1,LOW);
+            digitalWrite(2,LOW);
+            digitalWrite(3,LOW);
+          }
+}

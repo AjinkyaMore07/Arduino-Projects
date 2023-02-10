@@ -1,0 +1,62 @@
+#include <Wire.h>
+#include <RTClib.h>
+#include <LiquidCrystal_I2C.h>
+
+RTC_DS1307 rtc;
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+const int relayPin = 7;
+
+void setup() {
+  // Initialize serial communication
+  Serial.begin(9600);
+
+  // Initialize LCD
+  lcd.init();
+lcd.backlight();
+
+  // Initialize relay pin as an output
+  pinMode(relayPin, OUTPUT);
+
+  // Check if RTC is running and initialize
+  if (! rtc.begin()) {
+    Serial.println("Couldn't find RTC");
+    while (1);
+  }
+
+}
+
+void loop() {
+  // Get current date and time from RTC
+  DateTime now = rtc.now();
+  
+  lcd.setCursor(0, 0);
+  lcd.print("Time: ");
+  lcd.print(now.hour());
+  lcd.print(":");
+  lcd.print(now.minute());
+
+  // Check if the current time is within the desired watering schedule
+  if (now.hour() == 20 && now.minute() == 0 || (now.hour() == 19 && now.minute() == 36)) {
+    // Turn on the relay to activate the water pump
+    lcd.clear();
+    digitalWrite(relayPin, HIGH);
+
+    // Display message on LCD
+    lcd.clear();
+    lcd.print("Watering plants");
+
+    // Wait for 30 seconds
+    delay(10000);
+
+    // Turn off the relay
+    digitalWrite(relayPin, LOW);
+  }
+
+  // Update the LCD display with the current time
+  lcd.setCursor(0, 0);
+  lcd.print("Time: ");
+  lcd.print(now.hour());
+  lcd.print(":");
+  lcd.print(now.minute());
+}
