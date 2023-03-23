@@ -1,0 +1,37 @@
+#include <LiquidCrystal.h>
+const int rs=8,en=9,D4=5,D5=4,D6=3,D7=2;
+LiquidCrystal lcd(rs,en,D4,D5,D6,D7);
+int stateread;
+const int button=7;
+const int led = 6;
+
+void setup() {
+
+lcd.begin(20,4);
+Serial.begin(9600);
+pinMode(button, INPUT);
+pinMode(6,OUTPUT);
+digitalWrite(6, LOW);
+
+
+}
+
+void loop() 
+{ 
+    delay(50);
+  lcd.setCursor(5,0);
+  lcd.print("lcd : ");
+  lcd.print(millis()/1000);
+  stateread = digitalRead(button);
+
+  if(stateread == HIGH)
+  { 
+    lcd.setCursor(1,1);
+    lcd.print(" button on : ");
+    lcd.print(millis()/1000);
+    digitalWrite(6, HIGH);
+    delay(2000);
+    digitalWrite(6, LOW);
+  }
+   
+}
