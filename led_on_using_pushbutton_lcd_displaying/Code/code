@@ -1,37 +1,66 @@
 #include <LiquidCrystal.h>
-const int rs=8,en=9,D4=5,D5=4,D6=3,D7=2;
+const int rs=9,en=8,D4=7,D5=6,D6=5,D7=4;
 LiquidCrystal lcd(rs,en,D4,D5,D6,D7);
-int stateread;
-const int button=7;
-const int led = 6;
 
-void setup() {
 
+
+const int button1 = 2;
+const int resetbutton = 3;
+int lastbuttonstate = LOW;
+int buttonstate;
+
+int resetstate = 0;
+int reserlastState = LOW;
+
+unsigned long pressedTime  = 0;
+unsigned long releasedTime = 0;
+
+
+void setup() 
+{
 lcd.begin(20,4);
 Serial.begin(9600);
-pinMode(button, INPUT);
-pinMode(6,OUTPUT);
-digitalWrite(6, LOW);
+pinMode(2,INPUT);
+pinMode(3,INPUT);
+lcd.setCursor(1,0);
+lcd.print(" lcd on ");
+  
 
 
 }
 
-void loop() 
+void loop()
 { 
-    delay(50);
-  lcd.setCursor(5,0);
-  lcd.print("lcd : ");
-  lcd.print(millis()/1000);
-  stateread = digitalRead(button);
-
-  if(stateread == HIGH)
-  { 
-    lcd.setCursor(1,1);
-    lcd.print(" button on : ");
-    lcd.print(millis()/1000);
-    digitalWrite(6, HIGH);
-    delay(2000);
-    digitalWrite(6, LOW);
-  }
-   
+  delay(50);
+  resets();
+  onoff();
+  
 }
+
+void onoff()
+{
+  buttonstate = digitalRead(button1);
+
+  if(buttonstate == HIGH)
+  {
+    Serial.print(" button pressed");
+    lcd.setCursor(0,2);
+    lcd.print("button pressed on:");
+    lcd.print(pressedTime);
+    digitalWrite(0,HIGH);
+    delay(pressedTime);
+    digitalWrite(0,LOW);
+  }
+}
+
+  void resets()
+  {
+    resetstate = digitalRead(resetbutton);
+    if(reserlastState == LOW && resetstate == HIGH)  
+    { pressedTime = millis()/1000;
+      lcd.setCursor(1,1);
+      lcd.print(" counter : ");
+      Serial.println(pressedTime);
+
+    }
+  }
